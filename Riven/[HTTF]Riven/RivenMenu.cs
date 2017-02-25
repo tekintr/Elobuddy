@@ -3,42 +3,51 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using System.Drawing;
+using System;
+using EloBuddy;
+
 namespace HTTF_Riven_v2
 {
     class RivenMenu
     {
-        public static Menu Principal, Combo, Burst, Shield, Items, Laneclear, Jungleclear, Flee, Misc, Draw, Killsteal, AnimationCancle, ComboLogic;
+        public static Menu Principal, Combo, Burst, Shield, Items, Laneclear, Jungleclear, Flee, Misc, Draw, Killsteal, AnimationCancle, ComboLogic, M_NVer;
 
         public static void Load()
         {
+            Chat.Print("<font color = '#20b2aa'>Hoşgeldiniz </font><font color = '#ffffff'>[ HTTF ] " + "Riven" + "</font><font color = '#20b2aa'>. Türkçe Çeviri TekinTR.</font>");
+            CheckVersion.CheckUpdate();
+
             Principal = MainMenu.AddMenu("HTTF Riven v2", "Riven");
-            Principal.AddLabel("HTTF Riven v" + Assembly.GetExecutingAssembly().GetName().Version);
 
 
             Combo = Principal.AddSubMenu("Combo", "Combo");
             Combo.AddSeparator(3);
-            Combo.AddLabel("• Spells Combo");
-            Combo.Add("UseQCombo", new CheckBox("Kullan Q?"));
-            Combo.Add("UseWCombo", new CheckBox("Kullan W?"));
-            Combo.Add("UseECombo", new CheckBox("Kullan E"));
-            Combo.Add("UseRCombo", new CheckBox("Kullan R?"));
-            Combo.Add("UseR2Combo", new CheckBox("Kullan R2?"));
-            Combo.Add("BrokenAnimations", new CheckBox("Animasyon Kirma ?",false));
-            Combo.Add("moveback", new CheckBox("Combo'da geri donun ?", false));
-            Combo.AddSeparator(3);
-            Combo.AddLabel("• Spell R");
-            Combo.Add("UseRType", new ComboBox("Kullan R ne zaman", 1, "Hedeften az 40 % HP", "Zarar Gostergesi daha buyuk 100 %", "Her zaman", "Tusa basildiginda"));
-            Combo.Add("ForceR", new KeyBind("R Tusa basildiginda", false, KeyBind.BindTypes.PressToggle, 'U'));
-            Combo.Add("DontR1", new Slider("Kullanma R if Hedef HP {0}% <=", 25, 10, 50));
-            Combo.AddSeparator(3);
-            Combo.AddLabel("• Spell R2");
-            Combo.Add("UseR2Type", new ComboBox("Kullan R2 ne zaman", 0, "Sadece Oldur", "Hedef az olduğunda maksimum hasar 25 %"));
-            Combo.AddLabel(" FLEE");
-            Combo.Add("UseQFlee", new CheckBox("Kullan Q"));
-            Combo.Add("UseEFlee", new CheckBox("Kullan E"));
+            Combo.AddLabel("• Kombo Ayarları");
+            Combo.Add("UseQCombo", new CheckBox("Q kullan?"));
+            Combo.Add("UseWCombo", new CheckBox("W kullan?"));
+            Combo.Add("UseECombo", new CheckBox("E kullan"));
+            Combo.Add("UseRCombo", new CheckBox("R kullan?"));
+            Combo.Add("UseR2Combo", new CheckBox("R2 kullan?"));
+            Combo.Add("BrokenAnimations", new CheckBox("Animasyon iptali ?",false));
+            Combo.Add("logic1x1", new CheckBox("1x1 mantığını kullan"));
+            Combo.Add("UseHT", new CheckBox("Komboda Hydra-Tiamat kullan?"));
 
-            Shield = Principal.AddSubMenu("Shield", "Shield");
-            Shield.AddLabel("• Spell E");
+            Combo.AddSeparator(3);
+
+
+            Combo.AddLabel("• R Ayarları");
+            Combo.Add("UseRType", new ComboBox("R kullanma durumu", 1, "Hedefin canı az ise 40 % HP", "Verilicek hasar 100 % ise", "Her zaman", "Tuşa basıldığında"));
+            Combo.Add("ForceR", new KeyBind("R On Keypress Key", false, KeyBind.BindTypes.PressToggle, 'U'));
+            Combo.Add("DontR1", new Slider("Dont R if Target HP {0}% <=", 25, 10, 50));
+            Combo.AddSeparator(3);
+            Combo.AddLabel("• R2 Ayarları");
+            Combo.Add("UseR2Type", new ComboBox("R2 kullanma durumu", 0, "Sadece öldür", "Verilebilicek max hasardan sonra kalacak can 25 %"));
+            Combo.AddLabel(" Kaçış");
+            Combo.Add("UseQFlee", new CheckBox("Q Kullan"));
+            Combo.Add("UseEFlee", new CheckBox("E Kullan"));
+
+            Shield = Principal.AddSubMenu("Kalkan", "Shield");
+            Shield.AddLabel("• Kalkan E");
             foreach (var Enemy in EntityManager.Heroes.Enemies)
             {
                 Shield.AddLabel(Enemy.ChampionName);
@@ -52,64 +61,65 @@ namespace HTTF_Riven_v2
 
 
 
-            Laneclear = Principal.AddSubMenu("Laneclear", "Laneclear");
-            Laneclear.AddLabel("• WaweClean");
-            Laneclear.Add("UseQLane", new CheckBox("Kullan Q"));
-            Laneclear.Add("UseWLane", new CheckBox("Kullan W"));
-            Laneclear.Add("UseWLaneMin", new Slider("Kullan W carpicaksa {0} minyona", 3, 0, 10));
-            Laneclear.AddLabel("• JunglClean");
-            Laneclear.Add("UseQJG", new CheckBox("Kullan Q"));
-            Laneclear.Add("UseWJG", new CheckBox("Kullan W"));
-            Laneclear.Add("UseEJG", new CheckBox("Kullan E"));
+            Laneclear = Principal.AddSubMenu("Koridor", "Laneclear");
+            Laneclear.AddLabel("• Koridor");
+            Laneclear.Add("UseQLane", new CheckBox("Q kullan"));
+            Laneclear.Add("UseWLane", new CheckBox("W kullan"));
+            Laneclear.Add("UseWLaneMin", new Slider("W'nun isabet ediceği minyon sayısı {0}", 3, 0, 10));
+            Laneclear.AddLabel("• Orman");
+            Laneclear.Add("UseQJG", new CheckBox("Q kullan"));
+            Laneclear.Add("UseWJG", new CheckBox("W kullan"));
+            Laneclear.Add("UseEJG", new CheckBox("E kullan"));
 
 
 
-            Misc = Principal.AddSubMenu("Misc", "Misc");
-            Misc.Add("Skin", new CheckBox("SkinHilesi ?", false));
+            Misc = Principal.AddSubMenu("Çeşitli", "Misc");
+            Misc.Add("Skin", new CheckBox("Kostüm Seç ?", false));
             Misc.Add("SkinID", new Slider("Skin ID: {0}", 4, 0, 11));
-            Misc.Add("Interrupter", new CheckBox("Kesici ?"));
-            Misc.Add("InterrupterW", new CheckBox("Kesici ile W ?"));
-            Misc.Add("Gapcloser", new CheckBox("Atilma Onleyicisi ?"));
-            Misc.Add("GapcloserW", new CheckBox("Kullan W ile atilma engelleme ?"));
-            Misc.Add("AliveQ", new CheckBox("Kullan Q Hayatta Kalma ?"));
-            Misc.AddLabel("• ItemLogic");
-            Misc.AddLabel("• Hydra Logic");
-            Misc.Add("Hydra", new CheckBox("Kullan Hydra?"));
-            Misc.Add("HydraReset", new CheckBox("Kullan hydra AA sifirlamada"));
+            Misc.Add("Interrupter", new CheckBox("Engelleyici ?"));
+            Misc.Add("InterrupterW", new CheckBox("W ile engelle ?"));
+            Misc.Add("Gapcloser", new CheckBox("Atılma önleyici ?"));
+            Misc.Add("GapcloserW", new CheckBox("W ile atılma yapanlari engelle ?"));
+            Misc.Add("AliveQ", new CheckBox("Q bitmeden kullan ?"));
+            Misc.AddLabel("• Eşya Mantığı");
+            Misc.AddLabel("• Hydra Mantığı");
+            Misc.Add("Hydra", new CheckBox("Hydra Kullanılsınmı?"));
+            Misc.Add("HydraReset", new CheckBox("Düz vuruş sıfırlarmada hydra kullan"));
             Misc.AddSeparator(3);
             Misc.AddLabel("• Tiamat Logic");
-            Misc.Add("Tiamat", new CheckBox("Kullan Tiamat?"));
-            Misc.Add("TiamatReset", new CheckBox("Kullan Tiamat AA sifirlamada"));
+            Misc.Add("Tiamat", new CheckBox("Tiamat Kullanılsınmı?"));
+            Misc.Add("TiamatReset", new CheckBox("Düz vuruş sıfırlarmada tiamat kullan"));
             Misc.AddSeparator(3);
-            Misc.AddLabel("• Qss / Mercurial Logic");
-            Misc.Add("Qss", new CheckBox("Use Qss?"));
-            Misc.Add("QssCharm", new CheckBox("Kullan Qss buyu yuzunden"));
-            Misc.Add("QssFear", new CheckBox("Kullan Qss korkutma"));
-            Misc.Add("QssTaunt", new CheckBox("Kullan Qss because of taunt"));
-            Misc.Add("QssSuppression", new CheckBox("Kullan Qss durdurma tutma"));
-            Misc.Add("QssSnare", new CheckBox("Kullan Qss yakalanma"));
+            Misc.AddLabel("• Civalı Kuşak Mantığı");
+            Misc.Add("Qss", new CheckBox("Civalı kullan?"));
+            Misc.Add("QssCharm", new CheckBox("Ayartılınca Civalı kullan"));
+            Misc.Add("QssFear", new CheckBox("Korkutulunca Civalı kullan"));
+            Misc.Add("QssTaunt", new CheckBox("Kışkırtılınca Civalı kullan"));
+            Misc.Add("QssSuppression", new CheckBox("Engellenince Civalı kullan"));
+            Misc.Add("QssSnare", new CheckBox("Yerine sabitlenince Civalı kullan"));
             Misc.AddSeparator(3);
-            Misc.AddLabel("• Youmu Logic");
-            Misc.Add("Youmu", new CheckBox("Kullan Youmu?"));
-            Misc.AddLabel("• Recommend Use 250•");
-            Misc.Add("YoumuRange", new Slider("Youmu icin uzaklik", 1, 1, 325));
+            Misc.AddLabel("• Youmu Mantığı");
+            Misc.Add("Youmu", new CheckBox("Youmu Kullanılsınmı?"));
+            Misc.AddLabel("• Önerilen uzaklık 250•");
+            Misc.Add("YoumuRange", new Slider("Youmu Kullanma mesafesi", 1, 1, 325));
 
 
-            Draw = Principal.AddSubMenu("Drawing", "Drawing");
-            Draw.Add("DrawDamage", new CheckBox("Hasarimi Goster"));
-            Draw.Add("DrawOFF", new CheckBox("Gostergeler Kapali", false));
-            Draw.Add("drawjump", new CheckBox("Goster Ziplamayi(beta)", false));
+            Draw = Principal.AddSubMenu("Çizimler", "Drawing");
+            Draw.Add("DrawDamage", new CheckBox("Hasarımı göster"));
+            Draw.Add("DrawOFF", new CheckBox("Çizimleri kapat", false));
+            Draw.Add("drawjump", new CheckBox("Atlanabilicek duvarları göster (beta)", false));
 
 
-            AnimationCancle = Principal.AddSubMenu("AnimationCancle", "CanslAnimatio");
+            AnimationCancle = Principal.AddSubMenu("Animasyonİptali", "CanslAnimatio");
             AnimationCancle.Add("4", new CheckBox("Q"));
             AnimationCancle.Add("Spell2", new CheckBox("W"));
             AnimationCancle.Add("Spell3", new CheckBox("E"));
             AnimationCancle.Add("Spell4", new CheckBox("R"));
 
 
-            ComboLogic = Principal.AddSubMenu("ComboLogic", "ComboLogics");
-            ComboLogic.Add("BrokenAnimon", new CheckBox("Use features?"));
+            ComboLogic = Principal.AddSubMenu("KomboMantığı", "ComboLogics");
+            ComboLogic.Add("BrokenAnimon", new CheckBox("Özellikleri kullan?"));
+            ComboLogic.Add("moveback", new CheckBox("Komboda HTTF mantığını kullan?", false));
 
             ComboLogic.AddLabel("Q1,Q2,Q3");
             ComboLogic.Add("Q1Hydra", new CheckBox("Q>Hydra"));
@@ -126,7 +136,7 @@ namespace HTTF_Riven_v2
             ComboLogic.AddLabel("E");
             ComboLogic.Add("EQall", new CheckBox("E>Q"));
             ComboLogic.Add("EW", new CheckBox("E>W"));
-            ComboLogic.Add("EH", new CheckBox("E>Hydra or Tiamat"));
+            ComboLogic.Add("EH", new CheckBox("E>Hydra yada Tiamat"));
             ComboLogic.Add("ER1", new CheckBox("E>R1"));
             ComboLogic.Add("ER2", new CheckBox("E>R2"));
 
@@ -134,7 +144,7 @@ namespace HTTF_Riven_v2
             ComboLogic.AddLabel("R1");
             ComboLogic.Add("R1W", new CheckBox("R1>W"));
             ComboLogic.Add("R1Q", new CheckBox("R1>Q"));
-            ComboLogic.Add("R1Hydra", new CheckBox("R1>Hydra or Tiamat"));
+            ComboLogic.Add("R1Hydra", new CheckBox("R1>Hydra yada Tiamat"));
 
 
             ComboLogic.AddLabel("R2");
@@ -143,7 +153,7 @@ namespace HTTF_Riven_v2
             ComboLogic.Add("R2E", new CheckBox("R2>E"));
 
 
-            ComboLogic.AddLabel("Combo Logic V2 SOON");
+            ComboLogic.AddLabel("Combo Mantığı V2 Yakında");
 
 
 
@@ -187,10 +197,20 @@ namespace HTTF_Riven_v2
             return m[s].Cast<Slider>().CurrentValue;
         }
 
+        internal static bool getKeyBindItem(Action combo, string v)
+        {
+            throw new NotImplementedException();
+        }
+
         public static bool Keybind(Menu m, string s)
         {
             return m[s].Cast<KeyBind>().CurrentValue;
 
+        }
+
+        public static bool getKeyBindItem(Menu m, string item)
+        {
+            return m[item].Cast<KeyBind>().CurrentValue;
         }
 
 

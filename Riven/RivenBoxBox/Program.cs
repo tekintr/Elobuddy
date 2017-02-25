@@ -32,7 +32,7 @@ namespace RivenBoxBox
             Drawing.OnDraw += DrawManager.Drawing_Spot;
             Drawing.OnEndScene += DrawManager.Drawing_OnEndScene;
             //Obj_AI_Base.OnProcessSpellCast += LogicManager.Dodge_OnProcessSpellCast;
-            Chat.Print("<font color=\"#ca0711\" >Yapimci CTTBOT </font><font color=\"#ffffff\" >Turkce Ceviri</font><font color=\"#ca0711\" >TekinTR</font>");
+            Chat.Print("<font color=\"#ca0711\" >CTTBOT Presents </font><font color=\"#ffffff\" >Riven Box Box</font><font color=\"#ca0711\" >Kappa</font>");
         }
     }
 }
